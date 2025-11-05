@@ -11,7 +11,7 @@ public class Excel {
     private static final String ARCHIVO_ENTRENAMIENTO = "entrenamientos.xlsx";
     private static final String ARCHIVO_SALUD = "salud.xlsx";
 
-    // eliminar los archivos previos y inicializar los nuevos
+    // eliminar archivos  previos para crear los nuevos 
     public static void inicializarArchivos() {
         try {
             File f1 = new File(ARCHIVO_ENTRENAMIENTO);
@@ -24,7 +24,7 @@ public class Excel {
         }
     }
 
-    // segun el tipo para  que se utliice la app abrir un excel sobre ese salud
+    // crear excel salud  o datos 
     private static XSSFWorkbook getWorkbook(String tipo) throws IOException {
         String ruta = tipo.equalsIgnoreCase("Salud") ? ARCHIVO_SALUD : ARCHIVO_ENTRENAMIENTO;
         File file = new File(ruta);
@@ -48,7 +48,7 @@ public class Excel {
         wb.close();
     }
 
-    // escribir datos en el excel
+    // escribir datos 
     public static void escribirDatos(String tipo, List<String> datos) {
         try {
             XSSFWorkbook wb = getWorkbook(tipo);
@@ -61,16 +61,18 @@ public class Excel {
             }
 
             guardarWorkbook(wb, tipo);
+            System.out.println("Datos escritos correctamente en " + tipo);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //  leer los datos  y exportar
+    //leer datos 
     public static void leerDatos(String tipo) {
         try (XSSFWorkbook wb = getWorkbook(tipo)) {
             XSSFSheet sheet = wb.getSheet("Datos");
-            System.out.println("\n--- Datos en el archivo: " + (tipo.equalsIgnoreCase("Salud") ? ARCHIVO_SALUD : ARCHIVO_ENTRENAMIENTO) + " ---");
+            System.out.println("\n--- Datos en el archivo: " +
+                    (tipo.equalsIgnoreCase("Salud") ? ARCHIVO_SALUD : ARCHIVO_ENTRENAMIENTO) + " ---");
             for (Row row : sheet) {
                 for (Cell cell : row) {
                     System.out.print(cell.toString() + " | ");
@@ -82,14 +84,16 @@ public class Excel {
         }
     }
 
-    // formato de excel
+    // formato a las celdas
     public static void darFormato(String tipo) {
         try {
             XSSFWorkbook wb = getWorkbook(tipo);
             XSSFSheet sheet = wb.getSheet("Datos");
 
+            // Ajuste de columnas
             for (int i = 0; i < 5; i++) sheet.autoSizeColumn(i);
 
+            // Crear estilo
             CellStyle estilo = wb.createCellStyle();
             Font fuente = wb.createFont();
             fuente.setBold(true);
@@ -104,12 +108,13 @@ public class Excel {
             }
 
             guardarWorkbook(wb, tipo);
+            System.out.println(" Formato aplicado en " + tipo);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // insertar fila en el excel     
+    // insertar fila 
     public static void insertarFila(String tipo, int filaIndex) {
         try {
             XSSFWorkbook wb = getWorkbook(tipo);
@@ -118,12 +123,40 @@ public class Excel {
             Row nuevaFila = sheet.createRow(filaIndex);
             nuevaFila.createCell(0).setCellValue("Fila insertada automáticamente");
             guardarWorkbook(wb, tipo);
+            System.out.println("Fila insertada en " + tipo);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // insetar imagenes
+    // insertar columna 
+    public static void insertarColumna(String tipo, int columnaIndex) {
+        try {
+            XSSFWorkbook wb = getWorkbook(tipo);
+            XSSFSheet sheet = wb.getSheet("Datos");
+
+            for (Row row : sheet) {
+                int lastCell = row.getLastCellNum();
+                if (lastCell > 0) {
+                    for (int col = lastCell; col > columnaIndex; col--) {
+                        Cell oldCell = row.getCell(col - 1);
+                        Cell newCell = row.createCell(col);
+                        if (oldCell != null) {
+                            newCell.setCellValue(oldCell.toString());
+                        }
+                    }
+                    row.createCell(columnaIndex).setCellValue("Nueva columna");
+                }
+            }
+
+            guardarWorkbook(wb, tipo);
+            System.out.println("Columna insertada en " + tipo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //insertar imagen 
     public static void insertarImagen(String tipo, String rutaImagen) {
         try {
             XSSFWorkbook wb = getWorkbook(tipo);
@@ -138,9 +171,13 @@ public class Excel {
             XSSFClientAnchor anchor = new XSSFClientAnchor();
             anchor.setCol1(0);
             anchor.setRow1(sheet.getPhysicalNumberOfRows() + 2);
+            anchor.setCol2(5);
+            anchor.setRow2(sheet.getPhysicalNumberOfRows() + 10);
+
             drawing.createPicture(anchor, imgIndex);
 
             guardarWorkbook(wb, tipo);
+            System.out.println(" Imagen insertada en " + tipo);
         } catch (Exception e) {
             e.printStackTrace();
         }

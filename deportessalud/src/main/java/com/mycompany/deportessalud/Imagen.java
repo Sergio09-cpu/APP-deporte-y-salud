@@ -5,16 +5,11 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import java.io.File;
 
-/**
- * Clase Imagen
- * 
- * Permite cargar imágenes locales o desde Internet, escalarlas suavemente,
- * y ahora también obtenerlas como objetos Image o comprobar su existencia.
- */
+
 public class Imagen {
 
     // -------------------------------------------------
-    // 🔹 MÉTODOS ORIGINALES (NO TOCADOS)
+    // MÉTODOS ORIGINALES 
     // -------------------------------------------------
 
     public static ImageIcon loadLocalImage(String path, int width, int height) {
@@ -35,13 +30,10 @@ public class Imagen {
     }
 
     // -------------------------------------------------
-    // 🔹 MÉTODOS AÑADIDOS (NO AFECTAN A LOS TUYOS)
+    // MÉTODOS AÑADIDOS
     // -------------------------------------------------
 
-    /**
-     * Carga una imagen local sin escalar (devuelve el objeto Image).
-     * Útil para usar directamente con ImagenEscalada.
-     */
+    
     public static Image getLocalImage(String path) {
         try {
             return new ImageIcon(path).getImage();
@@ -51,10 +43,7 @@ public class Imagen {
         }
     }
 
-    /**
-     * Carga una imagen desde una URL sin escalar (devuelve el objeto Image).
-     * Esto permite usar la imagen directamente con JPanel personalizados.
-     */
+    
     public static Image getOnlineImage(String url) {
         try {
             return new ImageIcon(new URL(url)).getImage();
@@ -64,17 +53,13 @@ public class Imagen {
         }
     }
 
-    /**
-     * Comprueba si una imagen local existe en el disco antes de intentar cargarla.
-     */
+    
     public static boolean existeImagenLocal(String path) {
         File archivo = new File(path);
         return archivo.exists() && archivo.isFile();
     }
 
-    /**
-     * Escala una imagen ya existente al tamaño indicado (útil si ya la cargaste antes).
-     */
+    
     public static ImageIcon escalarImagen(Image img, int width, int height) {
         if (img == null) return null;
         Image nueva = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);

@@ -2,48 +2,38 @@ package com.mycompany.deportessalud;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
-import com.mycompany.deportessalud.Excel;
 
 public class VentanaSalud extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaSalud.class.getName());
+    private static final java.util.logging.Logger logger =
+            java.util.logging.Logger.getLogger(VentanaSalud.class.getName());
     private final ArrayList<String> registrosSalud = new ArrayList<>();
 
     public VentanaSalud() {
-        initComponents(); 
+        initComponents();
         configurarEstilo();
         configurarBotonGuardar();
-
-        // Ajuste de pantalla completa
         configurarPantallaCompleta();
     }
 
-    /**
-     * Fuerza que la ventana se abra en pantalla completa centrada
-     */
+    // Pantalla completa
     private void configurarPantallaCompleta() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Centra si no se maximiza
-
-        // Garantiza pantalla completa incluso con pack()
+        setLocationRelativeTo(null);
         SwingUtilities.invokeLater(() -> {
-            setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
             setVisible(true);
         });
     }
 
-    // Ajusta tamaños y estilos de los componentes
-     
+    // Estilo visual
     private void configurarEstilo() {
-        // Tamaño de los campos de texto
         Dimension campoGrande = new Dimension(300, 50);
         jTextField1.setPreferredSize(campoGrande);
         jTextField2.setPreferredSize(campoGrande);
         jTextField3.setPreferredSize(campoGrande);
 
-        // Fuentes
         Font fuente = new Font("Segoe UI", Font.PLAIN, 20);
         jTextField1.setFont(fuente);
         jTextField2.setFont(fuente);
@@ -54,7 +44,6 @@ public class VentanaSalud extends javax.swing.JFrame {
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 22));
         jButton1.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
-        // Fondo y espaciado
         getContentPane().setBackground(new Color(240, 245, 250));
         ((GridBagLayout) getContentPane().getLayout()).columnWeights = new double[]{0.5, 0.5};
         ((GridBagLayout) getContentPane().getLayout()).rowWeights = new double[]{0.5, 0.5, 0.5, 0.5, 0.5};
@@ -62,14 +51,12 @@ public class VentanaSalud extends javax.swing.JFrame {
         pack();
     }
 
-    // Configura el botón Guardar
-     
+    // Configura botón guardar
     private void configurarBotonGuardar() {
         jButton1.addActionListener(e -> guardarRegistro());
     }
 
-     // Guarda los datos e IMC
- 
+    // Guarda y actualiza Excel, gráficos y PDF
     private void guardarRegistro() {
         try {
             double peso = Double.parseDouble(jTextField1.getText());
@@ -92,26 +79,44 @@ public class VentanaSalud extends javax.swing.JFrame {
                 estado = "Obesidad";
             }
 
-            String registro = String.format("Peso: %.1f kg | Altura: %.1f cm | Sueño: %.1f h | %s (%s)",
-                    peso, alturaCm, horasSueño, imcTexto, estado);
+            String registro = String.format(
+                    "Peso: %.1f kg | Altura: %.1f cm | Sueño: %.1f h | %s (%s)",
+                    peso, alturaCm, horasSueño, imcTexto, estado
+            );
+
             registrosSalud.add(registro);
-            // Guardar también en Excel
+
+            // Guarda en Excel
             Excel.escribirDatos("Salud", java.util.Arrays.asList(
-            String.format("%.1f", peso),
-            String.format("%.1f", alturaCm),
-            String.format("%.1f", horasSueño),
-            imcTexto,
-            estado
+                    String.format("%.1f", peso),
+                    String.format("%.1f", alturaCm),
+                    String.format("%.1f", horasSueño),
+                    imcTexto,
+                    estado
             ));
             Excel.darFormato("Salud");
 
+            // Genera gráficos y PDF actualizados
+            GraficosJFreeChart.generarGraficoCircularSalud();
+            GraficosJFreeChart.generarGraficoBarrasEntrenamiento();
+            InformePDF.generarInformeCompleto(); // 🔥 genera ambos informes actualizados
+
+            // Muestra los datos guardados
             String todos = String.join("\n", registrosSalud);
-            JOptionPane.showMessageDialog(this, todos, "Registros de Salud", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    todos,
+                    "Registros de Salud",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(
+                    this,
                     "Introduce valores numéricos válidos.",
-                    "Error de entrada", JOptionPane.ERROR_MESSAGE);
+                    "Error de entrada",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

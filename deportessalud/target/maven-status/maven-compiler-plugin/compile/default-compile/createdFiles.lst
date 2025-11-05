@@ -1,9 +1,12 @@
+com\mycompany\deportessalud\InformePDF.class
 com\mycompany\deportessalud\Deportessalud.class
 com\mycompany\deportessalud\PantallaPrincipal$3.class
 com\mycompany\deportessalud\PantallaPrincipal$1.class
 com\mycompany\deportessalud\Excel.class
+com\mycompany\deportessalud\GraficosExcel.class
 com\mycompany\deportessalud\PantallaPrincipal.class
 com\mycompany\deportessalud\VentanaDeporte.class
 com\mycompany\deportessalud\PantallaPrincipal$2.class
+com\mycompany\deportessalud\GraficosJFreeChart.class
 com\mycompany\deportessalud\Imagen.class
 com\mycompany\deportessalud\VentanaSalud.class

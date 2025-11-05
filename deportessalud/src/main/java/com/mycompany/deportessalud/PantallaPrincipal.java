@@ -4,29 +4,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import com.mycompany.deportessalud.Imagen;
+import com.mycompany.deportessalud.Excel;
+import com.mycompany.deportessalud.GraficosExcel;
+import com.mycompany.deportessalud.GraficosJFreeChart;
+import com.mycompany.deportessalud.InformePDF;
 
 public class PantallaPrincipal extends JFrame {
 
     private JComboBox<String> comboEntrenamientos; // Combobox dinámico
-   
 
     public PantallaPrincipal() {
-        initComponents();      
-        configurarCombo();     
-        configurarImagenes();  
-        configurarEventos();   
+        initComponents();
+        configurarCombo();
+        configurarImagenes();
+        configurarEventos();
         configurarRedimension();
 
-        setExtendedState(JFrame.MAXIMIZED_BOTH);  
-        setVisible(true);                         
+        // Pantalla completa al abrir
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setVisible(true);
     }
 
-    // imagenes
+    // =============================================================
+    // Configuración de imágenes
+    // =============================================================
     private void configurarImagenes() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         // Imagen local (Deporte)
-        labeldeporte.setText(" "); 
+        labeldeporte.setText(" ");
         labeldeporte.setPreferredSize(new Dimension(screenSize.width / 2 - 20, screenSize.height - 150));
         labeldeporte.setIcon(Imagen.loadLocalImage(
                 "C:\\Users\\Sandra\\Documents\\NetBeansProjects\\deportessalud\\src\\main\\java\\com\\mycompany\\deportessalud\\deporte_local.jpg",
@@ -40,7 +46,9 @@ public class PantallaPrincipal extends JFrame {
                 labelsalud.getPreferredSize().width, labelsalud.getPreferredSize().height));
     }
 
-    //configuracion del click en las imagenes
+    // =============================================================
+    // Configuración de eventos
+    // =============================================================
     private void configurarEventos() {
         // Abrir VentanaDeporte según el tipo seleccionado
         labeldeporte.addMouseListener(new MouseAdapter() {
@@ -62,9 +70,10 @@ public class PantallaPrincipal extends JFrame {
         });
     }
 
-    // redimensionar imagenes
+    // =============================================================
+    // Redimensionar imágenes
+    // =============================================================
     private void configurarRedimension() {
-        // Cuando el tamaño de la ventana cambia, se vuelven a escalar las imágenes
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -84,7 +93,9 @@ public class PantallaPrincipal extends JFrame {
         });
     }
 
-    // config del combobox
+    // =============================================================
+    // ComboBox de selección de tipo de entrenamiento
+    // =============================================================
     private void configurarCombo() {
         comboEntrenamientos = new JComboBox<>();
         comboEntrenamientos.addItem("Fuerza");
@@ -93,13 +104,12 @@ public class PantallaPrincipal extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
-        c.gridwidth = 2; 
+        c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(10, 10, 10, 10);
 
         getContentPane().add(comboEntrenamientos, c);
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -144,13 +154,22 @@ public class PantallaPrincipal extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
    
 
-   public static void main(String[] args) {
-    //se borran los arvhicos excel anteriores
-    Excel.inicializarArchivos();
+  public static void main(String[] args) {
+        Excel.inicializarArchivos();
 
-    // se inicializa la app 
-    java.awt.EventQueue.invokeLater(() -> new PantallaPrincipal().setVisible(true));
-}
+        // Genera los gráficos dentro de los Excel
+        GraficosExcel.crearGraficoEntrenamiento();
+        GraficosExcel.crearGraficoSalud();
+
+        // Genera los gráficos en imagen JPG (JFreeChart)
+        GraficosJFreeChart.generarGraficoBarrasEntrenamiento();
+        GraficosJFreeChart.generarGraficoCircularSalud();
+
+        // Genera el PDF con tablas e imágenes
+        InformePDF.generarInformeCompleto();
+
+        java.awt.EventQueue.invokeLater(() -> new PantallaPrincipal().setVisible(true));
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
